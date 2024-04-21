@@ -3,4 +3,5 @@ module lattuga.service {
   requires lettuce.core;
 
   exports dev.vegetable.lattuga;
+  exports dev.vegetable.lattuga.service;
 }

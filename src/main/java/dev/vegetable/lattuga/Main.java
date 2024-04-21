@@ -1,23 +1,29 @@
 package dev.vegetable.lattuga;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.Filter;
+import com.sun.net.httpserver.HttpExchange;
+import dev.vegetable.lattuga.service.Http;
+import dev.vegetable.lattuga.service.Log;
 import io.lettuce.core.RedisClient;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 public interface Main {
-  Log log = Log.forType(Main.class);
+  Log log = Log.of(Main.class);
 
   static void main(String[] args) {
     try (final var log = Log.withRedis(Main.class, RedisClient.create("redis://eKsRFG2g8keAIel5eGH@hv-par6-007.clvrcld.net:12019"))) {
-      final var httpServer = HttpServer.create();
-
-
-      httpServer.bind(new InetSocketAddress(8080), 0);
-      httpServer.createContext("/", HttpHandlers.of(200, "Hello, world!"));
+      Http.server()
+        .bind(8080)
+        .get("/")
+        .exchange((_, response) ->
+          response
+            .header("Content-Type", "text/plain")
+            .body("Hello, world!")
+            .asText())
+        .start();
     } catch (InterruptedException e) {
       log.error("Interrupted: %s", e.getMessage());
     } catch (ExecutionException e) {
@@ -38,7 +44,7 @@ public interface Main {
 
     @Override
     public String description() {
-      return "";
+      return LogFilter.class.getSimpleName();
     }
   }
 }

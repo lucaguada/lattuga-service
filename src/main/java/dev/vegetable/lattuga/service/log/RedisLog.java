@@ -1,6 +1,6 @@
-package dev.vegetable.lattuga.log;
+package dev.vegetable.lattuga.service.log;
 
-import dev.vegetable.lattuga.Log;
+import dev.vegetable.lattuga.service.Log;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;

@@ -1,20 +1,20 @@
-package dev.vegetable.lattuga;
+package dev.vegetable.lattuga.service;
 
-import dev.vegetable.lattuga.log.NamedLog;
-import dev.vegetable.lattuga.log.RedisLog;
+import dev.vegetable.lattuga.service.log.SystemLog;
+import dev.vegetable.lattuga.service.log.RedisLog;
 import io.lettuce.core.RedisClient;
 
 import java.util.ResourceBundle;
 
-public sealed interface Log extends System.Logger, AutoCloseable permits NamedLog, RedisLog {
+public sealed interface Log extends System.Logger, AutoCloseable permits SystemLog, RedisLog {
   String TEMPLATE = "[%s] %s: %s%n";
 
-  static <ANY> Log forType(Class<ANY> type) {
-    return new NamedLog<>(type);
+  static <ANY> Log of(Class<ANY> type) {
+    return new SystemLog<>(type);
   }
 
   static <ANY> Log withRedis(Class<ANY> type, RedisClient redis) {
-    return new RedisLog(Log.forType(type), redis);
+    return new RedisLog(Log.of(type), redis);
   }
 
   default void info(String message, Object... params) {

@@ -1,11 +1,11 @@
-package dev.vegetable.lattuga.log;
+package dev.vegetable.lattuga.service.log;
 
-import dev.vegetable.lattuga.Log;
+import dev.vegetable.lattuga.service.Log;
 
 import java.util.ResourceBundle;
 
-public record NamedLog<ANY>(String getName) implements Log {
-  public NamedLog(Class<ANY> type) {
+public record SystemLog<ANY>(String getName) implements Log {
+  public SystemLog(Class<ANY> type) {
     this(type.getSimpleName());
   }
 
