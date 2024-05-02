@@ -1,20 +1,20 @@
 package dev.vegetable.lattuga.service;
 
+import dev.vegetable.lattuga.service.log.EclipseStoreLog;
 import dev.vegetable.lattuga.service.log.SystemLog;
-import dev.vegetable.lattuga.service.log.RedisLog;
-import io.lettuce.core.RedisClient;
+import org.eclipse.store.storage.embedded.types.EmbeddedStorageManager;
 
 import java.util.ResourceBundle;
 
-public sealed interface Log extends System.Logger, AutoCloseable permits SystemLog, RedisLog {
+public sealed interface Log extends System.Logger, AutoCloseable permits SystemLog, EclipseStoreLog {
   String TEMPLATE = "[%s] %s: %s%n";
 
   static <ANY> Log of(Class<ANY> type) {
     return new SystemLog<>(type);
   }
 
-  static <ANY> Log withRedis(Class<ANY> type, RedisClient redis) {
-    return new RedisLog(Log.of(type), redis);
+  static <ANY> Log withEclipseStore(Class<ANY> type, EmbeddedStorageManager storage) {
+    return new EclipseStoreLog(Log.of(type), storage);
   }
 
   default void info(String message, Object... params) {

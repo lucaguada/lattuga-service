@@ -1,29 +1,27 @@
 package dev.vegetable.lattuga.service.http.server;
 
+import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpContext;
 import dev.vegetable.lattuga.service.Http;
 
-import java.util.function.BiFunction;
+import java.util.List;
+import java.util.function.BiConsumer;
 
-public record SimpleHttpEndpoint(Http.Server server, HttpContext endpoint, MethodFilter path) implements Http.Server.Endpoint {
+public record SimpleHttpEndpoint(Http.Server server, HttpContext endpoint, Filter... filters) implements Http.Server.Endpoint {
   @Override
   public Http.Server.Endpoint header(String name, String... value) {
     return this;
   }
 
   @Override
-  public Http.Server.Endpoint contentType(String type) {
-    return this;
+  public Http.Server exchange(BiConsumer<Http.Request, Http.Response> handler) {
+    endpoint.getFilters().addAll(List.of(filters));
+    endpoint.setHandler(exchange -> handler.accept(new SimpleHttpRequest(exchange), new SimpleHttpResponse(exchange)));
+    return server;
   }
 
   @Override
-  public Http.Server exchange(BiFunction<Http.Request, Http.Response, Http.Response> handler) {
-    endpoint.setHandler(exchange -> {
-      exchange.getRequestURI();
-      var request = new SimpleHttpRequest(exchange);
-      var response = new SimpleHttpResponse(exchange);
-      handler.apply(request, response);
-    });
-    return server;
+  public Http.Server.Endpoint contentType(String type) {
+    return this;
   }
 }

@@ -1,4 +1,4 @@
-package dev.vegetable.lattuga.service.http.server;
+package dev.vegetable.lattuga.service.http.server.filter;
 
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
@@ -6,10 +6,10 @@ import dev.vegetable.lattuga.service.Http;
 
 import java.io.IOException;
 
-final class MethodFilter extends Filter {
+public final class MethodFilter extends Filter {
   private final Http.Method method;
 
-  MethodFilter(Http.Method method) {this.method = method;}
+  public MethodFilter(Http.Method method) {this.method = method;}
 
   @Override
   public void doFilter(HttpExchange exchange, Chain chain) throws IOException {

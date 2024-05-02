@@ -103,7 +103,7 @@ public interface Http<HTTP extends Http<HTTP, ENDPOINT>, ENDPOINT extends Http.E
 
     interface Content {
       enum Type implements Content {
-        JSON("application/json"), TEXT("plain/text"), HTML("plain/html"), XML("application/xml"), BYTES("application/octet-stream");
+        JSON("application/json"), TEXT("plain/text"), HTML("plain/html"), XML("application/xml"), STREAM("application/octet-stream");
 
         private final String value;
         Type(String type) {this.value = type;}
