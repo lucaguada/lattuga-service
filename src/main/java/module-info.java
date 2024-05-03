@@ -3,5 +3,4 @@ module lattuga.service {
   requires org.eclipse.store.storage.embedded;
 
   exports dev.vegetable.lattuga;
-  exports dev.vegetable.lattuga.service;
 }

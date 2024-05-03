@@ -1,7 +1,7 @@
-package dev.vegetable.lattuga.service.http.server;
+package dev.vegetable.lattuga.net.http.server.endpoint;
 
 import com.sun.net.httpserver.HttpExchange;
-import dev.vegetable.lattuga.service.Http;
+import dev.vegetable.lattuga.net.Http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,9 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import static dev.vegetable.lattuga.service.Http.Code.Success.OK;
-
-public record SimpleHttpResponse(HttpExchange exchange) implements Http.Response {
+public record SimpleResponse(HttpExchange exchange) implements Http.Response {
 
   @Override
   public Http.Response header(String name, String... value) {
@@ -23,10 +21,10 @@ public record SimpleHttpResponse(HttpExchange exchange) implements Http.Response
   public <CODE extends Http.Code> Http.Response status(CODE code, String line) {
     try {
       switch (code) {
-        case Http.Code status when status == OK && exchange.getAttribute("submit_content") instanceof byte[] content:
+        case Http.Code status when status == Http.Code.Success.OK && exchange.getAttribute("submit_content") instanceof byte[] content:
           exchange.sendResponseHeaders(code.status(), content.length);
           break;
-        case Http.Code status when status == OK && exchange.getAttribute("submit_content") instanceof String content:
+        case Http.Code status when status == Http.Code.Success.OK && exchange.getAttribute("submit_content") instanceof String content:
           exchange.sendResponseHeaders(code.status(), content.getBytes().length);
           break;
         default:

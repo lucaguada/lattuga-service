@@ -1,8 +1,8 @@
-package dev.vegetable.lattuga.service.http.server.filter;
+package dev.vegetable.lattuga.net.http.server.exchange.filter;
 
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;
-import dev.vegetable.lattuga.service.Http;
+import dev.vegetable.lattuga.net.Http;
 
 import java.io.IOException;
 

@@ -1,11 +1,11 @@
-package dev.vegetable.lattuga.service.http.server;
+package dev.vegetable.lattuga.net.http.server.endpoint;
 
 import com.sun.net.httpserver.HttpExchange;
-import dev.vegetable.lattuga.service.Http;
+import dev.vegetable.lattuga.net.Http;
 
 import java.net.URI;
 
-public record SimpleHttpRequest(HttpExchange exchange) implements Http.Request {
+public record SimpleRequest(HttpExchange exchange) implements Http.Request {
   @Override
   public URI uri() {
     return exchange.getRequestURI();

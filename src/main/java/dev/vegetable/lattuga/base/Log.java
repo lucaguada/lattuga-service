@@ -1,7 +1,7 @@
-package dev.vegetable.lattuga.service;
+package dev.vegetable.lattuga.base;
 
-import dev.vegetable.lattuga.service.log.EclipseStoreLog;
-import dev.vegetable.lattuga.service.log.SystemLog;
+import dev.vegetable.lattuga.base.log.EclipseStoreLog;
+import dev.vegetable.lattuga.base.log.SystemLog;
 import org.eclipse.store.storage.embedded.types.EmbeddedStorageManager;
 
 import java.util.ResourceBundle;

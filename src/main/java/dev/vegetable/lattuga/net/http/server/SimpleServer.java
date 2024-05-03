@@ -1,25 +1,26 @@
-package dev.vegetable.lattuga.service.http.server;
+package dev.vegetable.lattuga.net.http.server;
 
 import com.sun.net.httpserver.HttpServer;
-import dev.vegetable.lattuga.service.Http;
-import dev.vegetable.lattuga.service.http.server.filter.MethodFilter;
+import dev.vegetable.lattuga.net.Http;
+import dev.vegetable.lattuga.net.http.server.endpoint.SimpleEndpoint;
+import dev.vegetable.lattuga.net.http.server.exchange.Filters;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public record SimpleHttpServer(HttpServer server, ExecutorService executor, Filters filters) implements Http.Server {
-  public SimpleHttpServer(HttpServer server) {
+public record SimpleServer(HttpServer server, ExecutorService executor, Filters filters) implements Http.Server {
+  public SimpleServer(HttpServer server) {
     this(server, Executors.newVirtualThreadPerTaskExecutor(), Filters.factory());
   }
-  public SimpleHttpServer {
+  public SimpleServer {
     server.setExecutor(executor);
   }
 
   @Override
   public Endpoint endpoint(Method method, String path) {
-    return new SimpleHttpEndpoint(this, server.createContext(path), filters.path(path), filters.method(method));
+    return new SimpleEndpoint(this, server.createContext(path), filters.path(path), filters.method(method), filters.log());
   }
 
   @Override

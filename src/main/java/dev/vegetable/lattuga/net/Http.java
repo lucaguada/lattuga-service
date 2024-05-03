@@ -1,20 +1,25 @@
-package dev.vegetable.lattuga.service;
+package dev.vegetable.lattuga.net;
 
 import com.sun.net.httpserver.HttpServer;
-import dev.vegetable.lattuga.service.http.server.SimpleHttpServer;
+import dev.vegetable.lattuga.net.http.server.SimpleServer;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
-import static dev.vegetable.lattuga.service.Http.Code.Success.OK;
-import static dev.vegetable.lattuga.service.Http.Response.Content.Type.JSON;
+import static dev.vegetable.lattuga.net.Http.Code.Success.OK;
+import static dev.vegetable.lattuga.net.Http.Response.Content.Type.JSON;
 
 public interface Http<HTTP extends Http<HTTP, ENDPOINT>, ENDPOINT extends Http.Endpoint<HTTP, ENDPOINT>> {
   static Http.Server server() {
     try {
-      return new SimpleHttpServer(HttpServer.create());
+      return new SimpleServer(HttpServer.create());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -44,6 +49,22 @@ public interface Http<HTTP extends Http<HTTP, ENDPOINT>, ENDPOINT extends Http.E
     HTTP exchange(BiConsumer<Request, Response> handler);
   }
 
+  interface Exchange {
+    URI uri();
+
+    Optional<Method> method();
+
+    <BODY> Optional<BODY> body(Function<? super InputStream, ? extends Optional<BODY>> codec);
+
+    interface Filter {
+      Chain chain(Exchange exchange);
+
+      interface Chain {
+        Chain follow();
+      }
+    }
+  }
+
   interface Request {
     URI uri();
   }
@@ -67,6 +88,28 @@ public interface Http<HTTP extends Http<HTTP, ENDPOINT>, ENDPOINT extends Http.E
       private final int code;
 
       Success(int code) {this.code = code;}
+
+      @Override
+      public int status() {return code;}
+    }
+
+    enum ClientError implements Code {
+      BAD_REQUEST(400), UNAUTHORIZED(401), FORBIDDEN(403), NOT_FOUND(404), METHOD_NOT_ALLOWED(405);
+
+      private final int code;
+
+      ClientError(int code) {this.code = code;}
+
+      @Override
+      public int status() {return code;}
+    }
+
+    enum ServerError implements Code {
+      INTERNAL_SERVER_ERROR(500), NOT_IMPLEMENTED(501), BAD_GATEWAY(502), SERVICE_UNAVAILABLE(503), GATEWAY_TIMEOUT(504);
+
+      private final int code;
+
+      ServerError(int code) {this.code = code;}
 
       @Override
       public int status() {return code;}
@@ -115,7 +158,15 @@ public interface Http<HTTP extends Http<HTTP, ENDPOINT>, ENDPOINT extends Http.E
   }
 
   enum Method {
-    GET, POST, PUT, PATCH, HEAD, OPTIONS, DELETE
+    GET, POST, PUT, PATCH, HEAD, OPTIONS, DELETE;
+
+    private static final Collection<Method> methods = List.of(values());
+
+    public static Optional<Method> from(String name) {
+      return methods.stream()
+        .filter(method -> method.name().equalsIgnoreCase(name))
+        .findFirst();
+    }
   }
 
   public static void main(String[] args) {

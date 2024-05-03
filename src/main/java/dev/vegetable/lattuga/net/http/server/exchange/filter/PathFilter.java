@@ -1,4 +1,4 @@
-package dev.vegetable.lattuga.service.http.server.filter;
+package dev.vegetable.lattuga.net.http.server.exchange.filter;
 
 import com.sun.net.httpserver.Filter;
 import com.sun.net.httpserver.HttpExchange;

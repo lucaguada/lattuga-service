@@ -1,6 +1,6 @@
-package dev.vegetable.lattuga.service.log;
+package dev.vegetable.lattuga.base.log;
 
-import dev.vegetable.lattuga.service.Log;
+import dev.vegetable.lattuga.base.Log;
 import org.eclipse.store.storage.embedded.types.EmbeddedStorageManager;
 
 import java.util.HashMap;
